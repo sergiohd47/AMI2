@@ -54,17 +54,19 @@ public class Instance {
                 ficheroEscribirAux=new FileWriter(ficheroEscribir.getPath());
                 pw=new PrintWriter(ficheroEscribir);
                 String linea;
-                Random randomPick=new Random();
                 pw.println("#FICHERO SIMILAR AL FICHERO: "+nombreArchivoOrig+".txt SOLO QUE SE LE AÑADEN PESOS A LOS ARCOS");
                 pw.println("#nodoOrigen nodoDestino pesoArco");
                 while ((linea = br.readLine()) != null) {
+                    System.out.println(linea);
                     if (linea.indexOf("#") == 0) { //Ignoran las lineas que empiezan por "#"
                         continue;
                     }
                     int nodoOrigen = Integer.parseInt(linea.split("\\s+")[0]);
                     int nodoDestino = Integer.parseInt(linea.split("\\s+")[1]);
+                    Random randomPick=new Random();
                     double pesoArco = this.listaProbabilidades.get(randomPick.nextInt(this.listaProbabilidades.size()));
                     pw.println(nodoOrigen+" "+nodoDestino+" "+pesoArco);
+                    System.out.println(nodoOrigen+","+nodoDestino+","+pesoArco);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -92,10 +94,10 @@ public class Instance {
                 ficheroEscribirAux=new FileWriter(ficheroEscribir.getPath());
                 pw=new PrintWriter(ficheroEscribir);
                 String linea;
-                Random randomPick=new Random();
                 pw.println("#FICHERO SIMILAR AL FICHERO: "+nombreArchivoOrig+".csv SOLO QUE SE LE AÑADEN PESOS A LOS ARCOS");
                 pw.println("#nodoOrigen,nodoDestino,pesoArco");
                 while ((linea=br.readLine()) != null) {
+                    System.out.println(linea);
                     if (linea.indexOf("#") == 0) { //Ignoran las lineas que empiezan por "#"
                         continue;
                     }
@@ -104,8 +106,10 @@ public class Instance {
                     //REGEX: "\\s+" numero de espacios que sean
                     int nodoOrigen = Integer.parseInt(linea.split(",")[0]);
                     int nodoDestino = Integer.parseInt(linea.split(",")[1]);
+                    Random randomPick=new Random();
                     double pesoArco = this.listaProbabilidades.get(randomPick.nextInt(this.listaProbabilidades.size()));
                     pw.println(nodoOrigen+","+nodoDestino+","+pesoArco);
+                    System.out.println(nodoOrigen+","+nodoDestino+","+pesoArco);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -175,7 +179,6 @@ public class Instance {
                     //EN LA REGEX DEL FICHERO DE PRUEBA CREADO POR MI, ES NECESARIO PONER "\t".
                     //EN LA REGEX DEL FICHERO DE SNAP "snap2/email-Eu-core.txt", LA REGEX ES UN ESPACIO " ".
                     //REGEX: "\\s+" numero de espacios que sean
-                    System.out.println(linea);
                     int nodoOrigen = Integer.parseInt(linea.split(",")[0]);
                     nodos.add(nodoOrigen);
                     int nodoDestino = Integer.parseInt(linea.split(",")[1]);
