@@ -29,7 +29,7 @@ public class Instance {
         this.listaProbabilidades=Arrays.asList(0.1,0.01,0.001);
 
     }
-    public String modificarFichero(String rutaFicheroOriginal){
+    public void modificarFichero(String rutaFicheroOriginal){
         String patronTXT=".*.txt.*";
         String patronCSV=".*.csv.*";
         Pattern patTXT=Pattern.compile(patronTXT);
@@ -39,8 +39,7 @@ public class Instance {
         File archivo=null;
         FileReader fr=null;
         BufferedReader br=null;
-        File ficheroEscribir=null;
-        FileWriter ficheroEscribirAux=null;
+        FileWriter ficheroEscribir=null;
         PrintWriter pw=null;
         if(matTXT.matches()) {
             try {
@@ -50,14 +49,13 @@ public class Instance {
                 fr = new FileReader(archivo);
                 br = new BufferedReader(fr);
                 //EL VALOR DE 4 SE CORRESPONDE CON LA LONGITUD DE LA REGEX .txt
-                ficheroEscribir= new File((rutaArchivoOrig.substring(0,rutaArchivoOrig.length()-(nombreArchivoOrig.length()+4)))+nombreArchivoOrig+"ConPeso.txt");
-                ficheroEscribirAux=new FileWriter(ficheroEscribir.getPath());
+                ficheroEscribir= new FileWriter((rutaArchivoOrig.substring(0,rutaArchivoOrig.length()-(nombreArchivoOrig.length()+4)))+nombreArchivoOrig+"ConPeso.txt");
                 pw=new PrintWriter(ficheroEscribir);
                 String linea;
                 pw.println("#FICHERO SIMILAR AL FICHERO: "+nombreArchivoOrig+".txt SOLO QUE SE LE AÑADEN PESOS A LOS ARCOS");
                 pw.println("#nodoOrigen nodoDestino pesoArco");
                 while ((linea = br.readLine()) != null) {
-                    System.out.println(linea);
+                    //System.out.println(linea);
                     if (linea.indexOf("#") == 0) { //Ignoran las lineas que empiezan por "#"
                         continue;
                     }
@@ -66,7 +64,7 @@ public class Instance {
                     Random randomPick=new Random();
                     double pesoArco = this.listaProbabilidades.get(randomPick.nextInt(this.listaProbabilidades.size()));
                     pw.println(nodoOrigen+" "+nodoDestino+" "+pesoArco);
-                    System.out.println(nodoOrigen+","+nodoDestino+","+pesoArco);
+                    System.out.println(nodoOrigen+" "+nodoDestino+" "+pesoArco);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -76,7 +74,7 @@ public class Instance {
                         fr.close();
                     }
                     if (ficheroEscribir!=null){
-                        ficheroEscribirAux.close();
+                        ficheroEscribir.close();
                     }
                 } catch (Exception e2) {
                     e2.printStackTrace();
@@ -90,14 +88,13 @@ public class Instance {
                 fr = new FileReader(archivo);
                 br = new BufferedReader(fr);
                 //EL VALOR DE 4 SE CORRESPONDE CON LA LONGITUD DE LA REGEX .txt
-                ficheroEscribir=new File((rutaArchivoOrig.substring(0,rutaArchivoOrig.length()-(nombreArchivoOrig.length()+4)))+nombreArchivoOrig+"ConPeso.csv");
-                ficheroEscribirAux=new FileWriter(ficheroEscribir.getPath());
+                ficheroEscribir=new FileWriter((rutaArchivoOrig.substring(0,rutaArchivoOrig.length()-(nombreArchivoOrig.length()+4)))+nombreArchivoOrig+"ConPeso.csv");
                 pw=new PrintWriter(ficheroEscribir);
                 String linea;
                 pw.println("#FICHERO SIMILAR AL FICHERO: "+nombreArchivoOrig+".csv SOLO QUE SE LE AÑADEN PESOS A LOS ARCOS");
                 pw.println("#nodoOrigen,nodoDestino,pesoArco");
                 while ((linea=br.readLine()) != null) {
-                    System.out.println(linea);
+                    //System.out.println(linea);
                     if (linea.indexOf("#") == 0) { //Ignoran las lineas que empiezan por "#"
                         continue;
                     }
@@ -118,12 +115,14 @@ public class Instance {
                     if (fr != null) {
                         fr.close();
                     }
+                    if (ficheroEscribir!=null){
+                        ficheroEscribir.close();
+                    }
                 } catch (Exception e2) {
                     e2.printStackTrace();
                 }
             }
         }
-        return ficheroEscribir.getPath();
     }
     public ArrayList<Triple<Integer,Integer, Double>> leerFicheroYaModificado(String rutaFicheroModif){
         //SE USA EL SISTEMA DE PATRONES Y DE REGEX PARA DISTINGUIR ENTRE DOS TIPOS DE FICHEROS, LOS .txt y LOS .csv

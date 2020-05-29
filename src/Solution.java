@@ -8,12 +8,10 @@ import java.util.HashSet;
 public class Solution {
     private Grafo grafo;
     private HashSet<Integer> conjuntoNodoSemilla;
-    private float probabilidadArcos;
     private int nodosInfectadosPorSemilla;
-    public Solution(Grafo grafo, HashSet<Integer> conjuntoNodoSemilla, float probabilidadArcos){
+    public Solution(Grafo grafo, HashSet<Integer> conjuntoNodoSemilla){
         this.grafo=grafo;
         this.conjuntoNodoSemilla=conjuntoNodoSemilla;
-        this.probabilidadArcos=probabilidadArcos;
         this.nodosInfectadosPorSemilla=0;
     }
 
@@ -34,8 +32,8 @@ public class Solution {
                 }
                 conjuntoNodosVisitados.add(nodo);
                 for(Integer nodoPosInfect: this.grafo.nodosVecinos(nodo)){
-                    float probabilidadSolucion=(float)Math.random();
-                    if((!conjuntoNodosActivos.contains(nodoPosInfect)&&(this.probabilidadArcos>probabilidadSolucion))){
+                    double probabilidadSolucion=Math.random();
+                    if((!conjuntoNodosActivos.contains(nodoPosInfect)&&(this.grafo.pesoArco(nodo,nodoPosInfect)>probabilidadSolucion))){
                         conjuntoNodosFuturosInfec.add(nodoPosInfect);
                     }
                 }
@@ -55,9 +53,6 @@ public class Solution {
     }
     public HashSet<Integer> getConjuntoNodoSemilla(){
         return this.conjuntoNodoSemilla;
-    }
-    public float getProbabilidadArcos(){
-        return this.probabilidadArcos;
     }
     public int getNodosInfectadosPorSemilla(){
         return this.nodosInfectadosPorSemilla;

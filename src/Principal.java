@@ -1,8 +1,10 @@
+import Constructive.SumaProbConstructive;
 import EstructuraDatos.Grafo;
-import EstructuraDatos.GrafoND;
 import EstructuraDatos.Triple;
 
+
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @author Sergio Hernandez Dominguez
@@ -19,6 +21,8 @@ public class Principal {
     private static final int NUMERO_SIMULACIONES_EXPERIMENTO=100;
 
     //              RUTAS SNAP
+    //      RUTA SNAP DE PRUEBA
+    private static final String RUTA_PRUEBAS="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoTXT/snapPrueba/snapGrafoPruebaConPeso.txt";
     //      FORMATO .TXT
     private static final String RUTA_COLLEGEMSG_PESO_1899="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoTXT/snapCollegeMsg/CollegeMsgConPeso.txt";
     private static final String RUTA_EMAILEU_PESO_1005="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoTXT/snapEmailEU/email-Eu-coreConPeso.txt";
@@ -38,9 +42,41 @@ public class Principal {
 
     public static void main(String[] args) {
         Instance instancia=new Instance();
-        //ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado();
-        //Grafo grafoND=instancia.construirGrafo(listaNodos);
-        System.out.println("---------------");
-        //System.out.println(grafoND.tamañoGrafo());
+        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_EMAILEU_PESO_1005);
+        /*for(Triple<Integer,Integer,Double> tripla: listaNodos){
+            System.out.println(tripla);
+        }
+        System.out.println("-----------------");
+         */
+        Grafo grafoND=instancia.construirGrafo(listaNodos);
+        /*for(Integer nodo: grafoND.nodos()) {
+            for(Integer nodoVecino: grafoND.nodosVecinos(nodo)) {
+                System.out.println(nodo+ " " +nodoVecino+": " +grafoND.pesoArco(nodo,nodoVecino));
+            }
+        }
+         */
+        SumaProbConstructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
+        HashSet<Integer> conjuntoNodosSemilla=constructivoSumProb.construirConjuntoSemillas(grafoND);
+        for(Integer nodoSemilla: conjuntoNodosSemilla){
+            System.out.println("NODO "+nodoSemilla+": "+grafoND.sumaProbabilidades(nodoSemilla));
+        }
+
+        Solution solution=null;
+        int promedioInfeccion=0;
+        for(int i=1;i<=NUMERO_SIMULACIONES_EXPERIMENTO;i++){
+            System.out.println("----------------------------- SIMULACION " + i + " -----------------------------");
+            int promedioInfeccionAux=0;
+            solution=new Solution(grafoND,conjuntoNodosSemilla);
+            for(int j=1;j<=NUMERO_SIMULACIONES_SOLUTION;j++) {
+                System.out.println("------ SOLUCION " + j + " ------");
+                HashSet<Integer> conjuntoInfectados = solution.procedimientoCascada();
+                promedioInfeccionAux = promedioInfeccionAux + conjuntoInfectados.size();
+            }
+            promedioInfeccionAux=promedioInfeccionAux/NUMERO_SIMULACIONES_SOLUTION;
+            promedioInfeccion=promedioInfeccion+promedioInfeccionAux;
+            System.out.println("PROMEDIO INFECCION: " + promedioInfeccionAux);
+            System.out.println("-----------------------------------");
+        }
+        System.out.println("PROMEDIO INFECCION MAXIMA: "+promedioInfeccion/NUMERO_SIMULACIONES_EXPERIMENTO);
     }
 }

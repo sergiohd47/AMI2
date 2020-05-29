@@ -4,7 +4,10 @@ import java.util.ArrayList;
  * @author Sergio Hernandez Dominguez
  */
 public class PrincipalTrabajoFicheros {
+    //CORRER ESTE MAIN SOLO UNA VEZ, YA QUE GENERARA UNOS NUEVOS FICHEROS CON NUEVAS PROBABILIDADES (fichero run: 29/5/2020)
     //              RUTAS SNAP
+    //      RUTA SNAP DE PRUEBA
+    private static final String RUTA_PRUEBAS="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoTXT/snapPrueba/snapGrafoPrueba.txt";
     //      FORMATO .TXT
     private static final String RUTA_COLLEGEMSG_1899="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoTXT/snapCollegeMsg/CollegeMsg.txt";
     private static final String RUTA_EMAILEU_1005="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoTXT/snapEmailEU/email-Eu-core.txt";
@@ -25,8 +28,8 @@ public class PrincipalTrabajoFicheros {
     public static void main(String[] args) {
         Instance instancia=new Instance();
         ArrayList<String> listaRutas=new ArrayList<>();
-        listaRutas.add(RUTA_COLLEGEMSG_1899);
-        /*listaRutas.add(RUTA_EMAILEU_1005);
+        /*listaRutas.add(RUTA_COLLEGEMSG_1899);
+        listaRutas.add(RUTA_EMAILEU_1005);
         listaRutas.add(RUTA_FACEBOOKCOMB_4039);
         listaRutas.add(RUTA_GNUTELLA5_8846);
         listaRutas.add(RUTA_GNUTELLA6_8717);
@@ -40,10 +43,12 @@ public class PrincipalTrabajoFicheros {
         listaRutas.add(RUTA_GOVERMENT_7057);
         listaRutas.add(RUTA_TVSHOW_3892);
         listaRutas.add(RUTA_POLITICIAN_5908);
+        */
+        listaRutas.add(RUTA_PRUEBAS);
 
-         */
         for(String ruta: listaRutas){
-            String rutaDev=instancia.modificarFichero(ruta);
+            instancia.modificarFichero(ruta);
+            System.out.println("------------------");
 
         }
 

@@ -28,10 +28,6 @@ public class Triple<T,U,V> {
 
     @Override
     public String toString() {
-        return "Triple{" +
-                "primerElemento=" + primerElemento +
-                ", segundoElemento=" + segundoElemento +
-                ", tercerElemento=" + tercerElemento +
-                '}';
+        return this.primerElemento+" "+this.segundoElemento+" "+this.tercerElemento;
     }
 }
