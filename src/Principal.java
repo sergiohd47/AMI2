@@ -42,20 +42,19 @@ public class Principal {
 
     public static void main(String[] args) {
         Instance instancia=new Instance();
-        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_EMAILEU_PESO_1005);
-        /*for(Triple<Integer,Integer,Double> tripla: listaNodos){
+        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_PRUEBAS);
+        for(Triple<Integer,Integer,Double> tripla: listaNodos){
             System.out.println(tripla);
         }
         System.out.println("-----------------");
-         */
         Grafo grafoND=instancia.construirGrafo(listaNodos);
-        /*for(Integer nodo: grafoND.nodos()) {
+        for(Integer nodo: grafoND.nodos()) {
             for(Integer nodoVecino: grafoND.nodosVecinos(nodo)) {
                 System.out.println(nodo+ " " +nodoVecino+": " +grafoND.pesoArco(nodo,nodoVecino));
             }
         }
-         */
-        SumaProbConstructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
+
+        /*SumaProbConstructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
         HashSet<Integer> conjuntoNodosSemilla=constructivoSumProb.construirConjuntoSemillas(grafoND);
         for(Integer nodoSemilla: conjuntoNodosSemilla){
             System.out.println("NODO "+nodoSemilla+": "+grafoND.sumaProbabilidades(nodoSemilla));
@@ -78,5 +77,8 @@ public class Principal {
             System.out.println("-----------------------------------");
         }
         System.out.println("PROMEDIO INFECCION MAXIMA: "+promedioInfeccion/NUMERO_SIMULACIONES_EXPERIMENTO);
+         */
     }
+
+
 }
