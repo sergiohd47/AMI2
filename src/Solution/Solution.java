@@ -1,3 +1,5 @@
+package Solution;
+
 import EstructuraDatos.Grafo;
 
 import java.util.HashSet;

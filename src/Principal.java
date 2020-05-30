@@ -1,7 +1,9 @@
+import Constructive.Constructive;
 import Constructive.SumaProbConstructive;
 import EstructuraDatos.Grafo;
 import EstructuraDatos.Triple;
-
+import Solution.Solution;
+import Improvement.TabuImprovement;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +12,10 @@ import java.util.HashSet;
  * @author Sergio Hernandez Dominguez
  */
 public class Principal {
+
+    private static final int LONGITUD_LISTA_TABU_10=10; // TAMAÑO COLA TABU=10
+
+
     private static final int NODOS_SEMILLA_3=3; // EN ESTE CASO SE ESCOGEN TRES NODOS SEMILLAS
     private static final int NODOS_SEMILLA_10=10;
     private static final int NODOS_SEMILLA_20=20;
@@ -42,30 +48,15 @@ public class Principal {
 
     public static void main(String[] args) {
         Instance instancia=new Instance();
-        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_PRUEBAS);
-        for(Triple<Integer,Integer,Double> tripla: listaNodos){
-            System.out.println(tripla);
-        }
-        System.out.println("-----------------");
+        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_COLLEGEMSG_PESO_1899);
         Grafo grafoND=instancia.construirGrafo(listaNodos);
-        for(Integer nodo: grafoND.nodos()) {
-            for(Integer nodoVecino: grafoND.nodosVecinos(nodo)) {
-                System.out.println(nodo+ " " +nodoVecino+": " +grafoND.pesoArco(nodo,nodoVecino));
-            }
-        }
-
-        /*SumaProbConstructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
+        Constructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
         HashSet<Integer> conjuntoNodosSemilla=constructivoSumProb.construirConjuntoSemillas(grafoND);
-        for(Integer nodoSemilla: conjuntoNodosSemilla){
-            System.out.println("NODO "+nodoSemilla+": "+grafoND.sumaProbabilidades(nodoSemilla));
-        }
-
-        Solution solution=null;
+        Solution solution=new Solution(grafoND,conjuntoNodosSemilla);
         int promedioInfeccion=0;
         for(int i=1;i<=NUMERO_SIMULACIONES_EXPERIMENTO;i++){
             System.out.println("----------------------------- SIMULACION " + i + " -----------------------------");
             int promedioInfeccionAux=0;
-            solution=new Solution(grafoND,conjuntoNodosSemilla);
             for(int j=1;j<=NUMERO_SIMULACIONES_SOLUTION;j++) {
                 System.out.println("------ SOLUCION " + j + " ------");
                 HashSet<Integer> conjuntoInfectados = solution.procedimientoCascada();
@@ -76,8 +67,12 @@ public class Principal {
             System.out.println("PROMEDIO INFECCION: " + promedioInfeccionAux);
             System.out.println("-----------------------------------");
         }
-        System.out.println("PROMEDIO INFECCION MAXIMA: "+promedioInfeccion/NUMERO_SIMULACIONES_EXPERIMENTO);
-         */
+        int promedioActual=promedioInfeccion/NUMERO_SIMULACIONES_EXPERIMENTO;
+        TabuImprovement tabuImprovement=new TabuImprovement(LONGITUD_LISTA_TABU_10,promedioActual);
+        tabuImprovement.improve(solution);
+        System.out.println("PROMEDIO INFECCION MAXIMA: "+promedioActual);
+        System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: "+tabuImprovement.getMayorPromedio()+" CON EL CONJUNTO SEMILLAS: "+tabuImprovement.getConjuntoMayorPromedio());
+        System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: "+tabuImprovement.getMayorPromedioPeores()+" CON EL CONJUNTO SEMILLAS: "+tabuImprovement.getConjuntoMayorPromedioPeores());
     }
 
 
