@@ -26,9 +26,9 @@ public class PrincipalTrabajoFicheros {
     private static final String RUTA_POLITICIAN_5908="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoCSV/snapPolitician/politician_edges.csv";
 
     public static void main(String[] args) {
-        Instance instancia=new Instance();
+        /*Instance instancia=new Instance();
         ArrayList<String> listaRutas=new ArrayList<>();
-        /*listaRutas.add(RUTA_COLLEGEMSG_1899);
+        listaRutas.add(RUTA_COLLEGEMSG_1899);
         listaRutas.add(RUTA_EMAILEU_1005);
         listaRutas.add(RUTA_FACEBOOKCOMB_4039);
         listaRutas.add(RUTA_GNUTELLA5_8846);
@@ -43,7 +43,7 @@ public class PrincipalTrabajoFicheros {
         listaRutas.add(RUTA_GOVERMENT_7057);
         listaRutas.add(RUTA_TVSHOW_3892);
         listaRutas.add(RUTA_POLITICIAN_5908);
-        */
+
         listaRutas.add(RUTA_PRUEBAS);
 
         for(String ruta: listaRutas){
@@ -52,5 +52,9 @@ public class PrincipalTrabajoFicheros {
 
         }
 
+         */
+
     }
+
+
 }

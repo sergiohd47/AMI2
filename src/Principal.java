@@ -48,7 +48,8 @@ public class Principal {
 
     public static void main(String[] args) {
         Instance instancia=new Instance();
-        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_COLLEGEMSG_PESO_1899);
+        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_POLITICIAN_PESO_5908);
+        System.out.println(listaNodos);
         Grafo grafoND=instancia.construirGrafo(listaNodos);
         Constructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
         HashSet<Integer> conjuntoNodosSemilla=constructivoSumProb.construirConjuntoSemillas(grafoND);
