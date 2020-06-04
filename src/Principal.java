@@ -2,6 +2,7 @@ import Constructive.Constructive;
 import Constructive.SumaProbConstructive;
 import EstructuraDatos.Grafo;
 import EstructuraDatos.Triple;
+import Improvement.NoTabuImprovement;
 import Solution.Solution;
 import Improvement.TabuImprovement;
 
@@ -26,6 +27,8 @@ public class Principal {
     private static final int NUMERO_SIMULACIONES_SOLUTION=30;
     private static final int NUMERO_SIMULACIONES_EXPERIMENTO=100;
 
+    private static final int CRITERIO_PARADA=10;
+
     //              RUTAS SNAP
     //      RUTA SNAP DE PRUEBA
     private static final String RUTA_PRUEBAS="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoTXT/snapPrueba/snapGrafoPruebaConPeso.txt";
@@ -48,8 +51,7 @@ public class Principal {
 
     public static void main(String[] args) {
         Instance instancia=new Instance();
-        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_POLITICIAN_PESO_5908);
-        System.out.println(listaNodos);
+        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_COLLEGEMSG_PESO_1899);
         Grafo grafoND=instancia.construirGrafo(listaNodos);
         Constructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
         HashSet<Integer> conjuntoNodosSemilla=constructivoSumProb.construirConjuntoSemillas(grafoND);
@@ -69,11 +71,30 @@ public class Principal {
             System.out.println("-----------------------------------");
         }
         int promedioActual=promedioInfeccion/NUMERO_SIMULACIONES_EXPERIMENTO;
-        TabuImprovement tabuImprovement=new TabuImprovement(LONGITUD_LISTA_TABU_10,promedioActual);
+
+        long inicioTiempoTabu=System.currentTimeMillis();
+        TabuImprovement tabuImprovement=new TabuImprovement(LONGITUD_LISTA_TABU_10,promedioActual,CRITERIO_PARADA);
         tabuImprovement.improve(solution);
+        long finalTiempoTabu=System.currentTimeMillis();
+        double tiempoTabu=finalTiempoTabu-inicioTiempoTabu;
+
+        long inicioTiempoNoTabu=System.currentTimeMillis();
+        NoTabuImprovement noTabuImprovement=new NoTabuImprovement(promedioActual);
+        noTabuImprovement.improve(solution);
+        long finalTiempoNoTabu=System.currentTimeMillis();
+        double tiempoNoTabu=finalTiempoNoTabu-inicioTiempoNoTabu;
+
         System.out.println("PROMEDIO INFECCION MAXIMA: "+promedioActual);
+
+        System.out.println("--------IMPROVEMENT CON TABU--------");
         System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: "+tabuImprovement.getMayorPromedio()+" CON EL CONJUNTO SEMILLAS: "+tabuImprovement.getConjuntoMayorPromedio());
         System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: "+tabuImprovement.getMayorPromedioPeores()+" CON EL CONJUNTO SEMILLAS: "+tabuImprovement.getConjuntoMayorPromedioPeores());
+        System.out.println("TIEMPO IMPROVEMENT CON TABU: "+tiempoTabu/1000);
+
+        System.out.println("--------IMPROVEMENT SIN TABU--------");
+        System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: "+noTabuImprovement.getMayorPromedio()+" CON EL CONJUNTO SEMILLAS: "+noTabuImprovement.getConjuntoMayorPromedio());
+        System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: "+noTabuImprovement.getMayorPromedioPeores()+" CON EL CONJUNTO SEMILLAS: "+noTabuImprovement.getConjuntoMayorPromedioPeores());
+        System.out.println("TIEMPO IMPROVEMENT SIN TABU: "+tiempoNoTabu/1000);
     }
 
 

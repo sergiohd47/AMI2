@@ -14,6 +14,8 @@ public class GrafoND implements Grafo{
     public GrafoND(int numeroNodos, int nodoMaximo){
         this.numeroNodos=numeroNodos;
         this.listaAdyacencia= new HashSet[nodoMaximo+1]; //INICIALIZA LA LISTA ADYACENCIA AL NUMERO NODOS +1 (desechar la posicion 0)
+        System.out.println(nodoMaximo);
+        System.out.println(this.listaAdyacencia.length);
         this.matrizAdyacencia= new double[this.listaAdyacencia.length][this.listaAdyacencia.length]; //INICIALIZA LA MATRIZ ADYACENCIA
         for(int i=0;i<this.listaAdyacencia.length;i++){
             this.matrizAdyacencia[0][i]= Double.MIN_VALUE;

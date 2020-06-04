@@ -64,7 +64,6 @@ public class Instance {
                     Random randomPick=new Random();
                     double pesoArco = this.listaProbabilidades.get(randomPick.nextInt(this.listaProbabilidades.size()));
                     pw.println(nodoOrigen+" "+nodoDestino+" "+pesoArco);
-                    System.out.println(nodoOrigen+" "+nodoDestino+" "+pesoArco);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -106,7 +105,6 @@ public class Instance {
                     Random randomPick=new Random();
                     double pesoArco = this.listaProbabilidades.get(randomPick.nextInt(this.listaProbabilidades.size()));
                     pw.println(nodoOrigen+","+nodoDestino+","+pesoArco);
-                    System.out.println(nodoOrigen+","+nodoDestino+","+pesoArco);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
