@@ -41,10 +41,10 @@ public class TabuImprovement implements Improvement {
         this.conjuntoMayorPromedio=conjuntoNodosSemillas;
         HashSet<Integer> conjuntoNodosEntrada= new HashSet<>(grafoND.nodos());
         conjuntoNodosEntrada.removeAll(conjuntoNodosSemillas);
-
+        boolean terminado=false;
         int numero=0;
         int numeroIteraccionesNoMejora=0;
-        while(true) {
+        while(!terminado) {
             for (Integer nodoSemilla : conjuntoNodosSemillas) {
                 for (Integer nodoEntrada : conjuntoNodosEntrada) {
                     System.out.println("------ IMPROVEMENT " + numero + " ------");
@@ -84,14 +84,17 @@ public class TabuImprovement implements Improvement {
                         }else{
                             numeroIteraccionesNoMejora++;
                             if(numeroIteraccionesNoMejora==this.criterioParada){
+                                terminado=true;
                                 break;
                             }
                         }
                     }
                     numero++;
                 }
+                if(terminado){
+                    break;
+                }
             }
-            break;
         }
     }
 
