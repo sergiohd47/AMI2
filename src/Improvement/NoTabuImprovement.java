@@ -32,6 +32,7 @@ public class NoTabuImprovement implements Improvement{
         conjuntoNodosEntradas.removeAll(conjuntoSemillas);
         int numero=0;
         for(Integer nodoSemilla: conjuntoSemillas){
+            System.out.println("--------------- IMPROVEMENT GRANDE ---------------");
             for(Integer nodoEntrada: conjuntoNodosEntradas){
                 System.out.println("------ IMPROVEMENT " + numero + " ------");
                 HashSet<Integer> conjuntoNuevasSemillas=new HashSet<>(conjuntoSemillas);

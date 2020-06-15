@@ -17,21 +17,23 @@ public class TabuImprovement implements Improvement {
 
     private int longitudTabu;
     private int mayorPromedio;
+    private int promedioActual;
     private HashSet<Integer> conjuntoMayorPromedio;
     private HashSet<Integer> conjuntoMayorPromedioPeores;
     private ArrayList<Integer> colaTabu;
-    private ArrayList<Integer> colaTabuPeores;
     private int mayorPromedioPeores;
     private int criterioParada;
 
     public TabuImprovement(int longitudTabu, int promedioActual, int criterioParada){
         this.longitudTabu=longitudTabu;
-        this.mayorPromedio=promedioActual;
+        this.promedioActual=promedioActual;
+
+        this.mayorPromedio=Integer.MIN_VALUE;
         this.mayorPromedioPeores=Integer.MIN_VALUE;
+
         this.conjuntoMayorPromedio=new HashSet<>();
         this.conjuntoMayorPromedioPeores=new HashSet<>();
         this.colaTabu=new ArrayList<>();
-        this.colaTabuPeores=new ArrayList<>();
         this.criterioParada=criterioParada;
     }
     @Override
@@ -39,20 +41,32 @@ public class TabuImprovement implements Improvement {
         Grafo grafoND=solution.getGrafo();
         HashSet<Integer> conjuntoNodosSemillas=solution.getConjuntoNodoSemilla();
         this.conjuntoMayorPromedio=conjuntoNodosSemillas;
-        HashSet<Integer> conjuntoNodosEntrada= new HashSet<>(grafoND.nodos());
-        conjuntoNodosEntrada.removeAll(conjuntoNodosSemillas);
+        this.longitudTabu=(int)Math.ceil((float)(this.longitudTabu*conjuntoNodosSemillas.size())/100); //REDONDEA HACIA ARRIBA (0.3->1)
+        System.out.println("longitud cola: "+this.longitudTabu);
         boolean terminado=false;
+        boolean salirMayorPromedioActual=false;
         int numero=0;
-        int numeroIteraccionesNoMejora=0;
+        int numeroIteraccionesNoMejora;
         while(!terminado) {
-            for (Integer nodoSemilla : conjuntoNodosSemillas) {
+            numeroIteraccionesNoMejora=0;
+            HashSet<Integer> conjuntoNodosEntrada= new HashSet<>(grafoND.nodos());
+            conjuntoNodosEntrada.removeAll(this.conjuntoMayorPromedio);
+            System.out.println("semilla: "+this.conjuntoMayorPromedio);
+            for (Integer nodoSemilla : this.conjuntoMayorPromedio) {
+                System.out.println("--------------- IMPROVEMENT GRANDE ---------------");
                 for (Integer nodoEntrada : conjuntoNodosEntrada) {
                     System.out.println("------ IMPROVEMENT " + numero + " ------");
-                    if (colaTabu.contains(nodoEntrada) || colaTabuPeores.contains(nodoEntrada)) {
+                    if (colaTabu.contains(nodoEntrada)) {
                         System.out.println("SALTA POR COLA TABU");
                         continue;
                     }
-                    HashSet<Integer> conjuntoNuevasSemillas = new HashSet<>(conjuntoNodosSemillas);
+                    if (this.colaTabu.size() + 1 > this.longitudTabu) {
+                        this.colaTabu.remove(0);
+                        this.colaTabu.add(nodoEntrada);
+                    } else {
+                        this.colaTabu.add(nodoEntrada);
+                    }
+                    HashSet<Integer> conjuntoNuevasSemillas = new HashSet<>(this.conjuntoMayorPromedio);
                     conjuntoNuevasSemillas.remove(nodoSemilla);
                     conjuntoNuevasSemillas.add(nodoEntrada);
                     Solution nuevaSolution = new Solution(grafoND, conjuntoNuevasSemillas);
@@ -64,25 +78,21 @@ public class TabuImprovement implements Improvement {
                     promedioInfeccion = promedioInfeccion / NUMERO_SIMULACIONES_SOLUTION;
                     if (promedioInfeccion > this.mayorPromedio) {
                         this.mayorPromedio = promedioInfeccion;
-                        this.conjuntoMayorPromedio = conjuntoNuevasSemillas;
-                        if (this.colaTabu.size() + 1 > this.longitudTabu) {
-                            this.colaTabu.remove(0);
-                            this.colaTabu.add(nodoEntrada);
-                        } else {
-                            this.colaTabu.add(nodoEntrada);
+                        if(this.mayorPromedio>this.promedioActual){
+                            System.out.println("promedio ("+this.mayorPromedio+") > promedioActual ("+this.promedioActual+")");
+                            this.promedioActual=this.mayorPromedio;
+                            this.conjuntoMayorPromedio = conjuntoNuevasSemillas;
+                            System.out.println("nueva semilla: "+this.conjuntoMayorPromedio);
+                            salirMayorPromedioActual=true;
+                            break;
                         }
                     } else {
                         if (promedioInfeccion > this.mayorPromedioPeores) {
                             this.mayorPromedioPeores = promedioInfeccion;
                             this.conjuntoMayorPromedioPeores = conjuntoNuevasSemillas;
-                            if (this.colaTabuPeores.size() + 1 > this.longitudTabu) {
-                                this.colaTabuPeores.remove(0);
-                                this.colaTabuPeores.add(nodoEntrada);
-                            } else {
-                                this.colaTabuPeores.add(nodoEntrada);
-                            }
                         }else{
                             numeroIteraccionesNoMejora++;
+                            System.out.println("iteracciones no mejora: "+numeroIteraccionesNoMejora);
                             if(numeroIteraccionesNoMejora==this.criterioParada){
                                 terminado=true;
                                 break;
@@ -91,7 +101,7 @@ public class TabuImprovement implements Improvement {
                     }
                     numero++;
                 }
-                if(terminado){
+                if(terminado||salirMayorPromedioActual){
                     break;
                 }
             }
@@ -100,9 +110,9 @@ public class TabuImprovement implements Improvement {
 
     @Override
     public int getMayorPromedio() {return this.mayorPromedio;}
+    public int getPromedioActual() {return this.promedioActual;}
     public HashSet<Integer> getConjuntoMayorPromedio(){return this.conjuntoMayorPromedio;}
     public HashSet<Integer> getConjuntoMayorPromedioPeores(){return this.conjuntoMayorPromedioPeores;}
-    public ArrayList<Integer> getColaTabu(){return this.colaTabu;}
     public int getMayorPromedioPeores(){return this.mayorPromedioPeores; }
-    public ArrayList<Integer> getColaTabuPeores(){return this.colaTabuPeores;}
+
 }
