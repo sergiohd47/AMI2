@@ -7,7 +7,9 @@ import Solution.Solution;
 import Improvement.TabuImprovement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author Sergio Hernandez Dominguez
@@ -58,52 +60,57 @@ public class Principal {
     private static final String RUTA_POLITICIAN_PESO_5908="/Users/sergiohernandezdominguez/Desktop/universidad/TFG2/SNAP/formatoCSV/snapPolitician/politician_edges.csv";
 
     public static void main(String[] args) {
-        Instance instancia=new Instance();
-        ArrayList<Triple<Integer,Integer,Double>> listaNodos=instancia.leerFicheroYaModificado(RUTA_FACEBOOKCOMB_PESO_4039);
-        Grafo grafoND=instancia.construirGrafo(listaNodos);
-        Constructive constructivoSumProb=new SumaProbConstructive(NODOS_SEMILLA_3);
-        HashSet<Integer> conjuntoNodosSemilla=constructivoSumProb.construirConjuntoSemillas(grafoND);
-        Solution solution=new Solution(grafoND,conjuntoNodosSemilla);
-        int promedioInfeccion=0;
-        for(int i=1;i<=NUMERO_SIMULACIONES_EXPERIMENTO;i++){
-            System.out.println("----------------------------- SIMULACION " + i + " -----------------------------");
-            int promedioInfeccionAux=0;
-            for(int j=1;j<=NUMERO_SIMULACIONES_SOLUTION;j++) {
-                System.out.println("------ SOLUCION " + j + " ------");
-                HashSet<Integer> conjuntoInfectados = solution.procedimientoCascada();
-                promedioInfeccionAux = promedioInfeccionAux + conjuntoInfectados.size();
+        List<Integer> listaPorcentajeListaTabu = Arrays.asList(10, 20, 30, 40, 50);
+        List<Integer> listaCriteriosParada = Arrays.asList(10, 15, 20, 30, 35);
+        for (Integer porcentajeListaTabu : listaPorcentajeListaTabu) {
+            for (Integer criterioParada : listaCriteriosParada) {
+                Instance instancia = new Instance();
+                ArrayList<Triple<Integer, Integer, Double>> listaNodos = instancia.leerFicheroYaModificado(RUTA_BITCOINOTC_PESO_5881);
+                Grafo grafoND = instancia.construirGrafo(listaNodos);
+                Constructive constructivoSumProb = new SumaProbConstructive(NODOS_SEMILLA_50);
+                HashSet<Integer> conjuntoNodosSemilla = constructivoSumProb.construirConjuntoSemillas(grafoND);
+                Solution solution = new Solution(grafoND, conjuntoNodosSemilla);
+                int promedioInfeccion = 0;
+                for (int i = 1; i <= NUMERO_SIMULACIONES_EXPERIMENTO; i++) {
+                    //System.out.println("----------------------------- SIMULACION " + i + " -----------------------------");
+                    int promedioInfeccionAux = 0;
+                    for (int j = 1; j <= NUMERO_SIMULACIONES_SOLUTION; j++) {
+                        //System.out.println("------ SOLUCION " + j + " ------");
+                        HashSet<Integer> conjuntoInfectados = solution.procedimientoCascada();
+                        promedioInfeccionAux = promedioInfeccionAux + conjuntoInfectados.size();
+                    }
+                    promedioInfeccionAux = promedioInfeccionAux / NUMERO_SIMULACIONES_SOLUTION;
+                    promedioInfeccion = promedioInfeccion + promedioInfeccionAux;
+                    //System.out.println("PROMEDIO INFECCION: " + promedioInfeccionAux);
+                    //System.out.println("-----------------------------------");
+                }
+                int promedioActual = promedioInfeccion / NUMERO_SIMULACIONES_EXPERIMENTO;
+
+                long inicioTiempoTabu = System.currentTimeMillis();
+                TabuImprovement tabuImprovement = new TabuImprovement(porcentajeListaTabu, promedioActual, criterioParada);
+                tabuImprovement.improve(solution);
+                long finalTiempoTabu = System.currentTimeMillis();
+                double tiempoTabu = finalTiempoTabu - inicioTiempoTabu;
+                System.out.println("-------------------------- PORCENTAJE TABU: "+porcentajeListaTabu+" ------------------------------------------------------");
+                System.out.println("------------------------------- CRITERIO PARADA: "+criterioParada+" -------------------------------");
+                //long inicioTiempoNoTabu = System.currentTimeMillis();
+                //NoTabuImprovement noTabuImprovement=new NoTabuImprovement(promedioActual);
+                //noTabuImprovement.improve(solution);
+                //long finalTiempoNoTabu = System.currentTimeMillis();
+                //double tiempoNoTabu = finalTiempoNoTabu - inicioTiempoNoTabu;
+
+                System.out.println("PROMEDIO INFECCION MAXIMA: " + promedioActual);
+                System.out.println("-----------------------------------");
+                System.out.println("--------IMPROVEMENT CON TABU--------");
+                System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: " + tabuImprovement.getMayorPromedio() + " CON EL CONJUNTO SEMILLAS: " + tabuImprovement.getConjuntoMayorPromedio());
+                System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: " + tabuImprovement.getMayorPromedioPeores() + " CON EL CONJUNTO SEMILLAS: " + tabuImprovement.getConjuntoMayorPromedioPeores());
+                System.out.println("TIEMPO IMPROVEMENT CON TABU: " + tiempoTabu / 1000);
+                //System.out.println("-----------------------------------");
+                //System.out.println("--------IMPROVEMENT SIN TABU--------");
+                //System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: "+noTabuImprovement.getMayorPromedio()+" CON EL CONJUNTO SEMILLAS: "+noTabuImprovement.getConjuntoMayorPromedio());
+                //System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: "+noTabuImprovement.getMayorPromedioPeores()+" CON EL CONJUNTO SEMILLAS: "+noTabuImprovement.getConjuntoMayorPromedioPeores());
+                //System.out.println("TIEMPO IMPROVEMENT SIN TABU: " + tiempoNoTabu / 1000);
             }
-            promedioInfeccionAux=promedioInfeccionAux/NUMERO_SIMULACIONES_SOLUTION;
-            promedioInfeccion=promedioInfeccion+promedioInfeccionAux;
-            System.out.println("PROMEDIO INFECCION: " + promedioInfeccionAux);
-            System.out.println("-----------------------------------");
         }
-        int promedioActual=promedioInfeccion/NUMERO_SIMULACIONES_EXPERIMENTO;
-
-        long inicioTiempoTabu=System.currentTimeMillis();
-        TabuImprovement tabuImprovement=new TabuImprovement(PORCENTAJE_LISTA_TABU_30,promedioActual,CRITERIO_PARADA_20);
-        tabuImprovement.improve(solution);
-        long finalTiempoTabu=System.currentTimeMillis();
-        double tiempoTabu=finalTiempoTabu-inicioTiempoTabu;
-        System.out.println("--------------------------------------------------------------------------------");
-        long inicioTiempoNoTabu=System.currentTimeMillis();
-        //NoTabuImprovement noTabuImprovement=new NoTabuImprovement(promedioActual);
-        //noTabuImprovement.improve(solution);
-        long finalTiempoNoTabu=System.currentTimeMillis();
-        double tiempoNoTabu=finalTiempoNoTabu-inicioTiempoNoTabu;
-
-        System.out.println("PROMEDIO INFECCION MAXIMA: "+promedioActual);
-        System.out.println("-----------------------------------");
-        System.out.println("--------IMPROVEMENT CON TABU--------");
-        System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: "+tabuImprovement.getMayorPromedio()+" CON EL CONJUNTO SEMILLAS: "+tabuImprovement.getConjuntoMayorPromedio());
-        System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: "+tabuImprovement.getMayorPromedioPeores()+" CON EL CONJUNTO SEMILLAS: "+tabuImprovement.getConjuntoMayorPromedioPeores());
-        System.out.println("TIEMPO IMPROVEMENT CON TABU: "+tiempoTabu/1000);
-        System.out.println("-----------------------------------");
-        System.out.println("--------IMPROVEMENT SIN TABU--------");
-        //System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: "+noTabuImprovement.getMayorPromedio()+" CON EL CONJUNTO SEMILLAS: "+noTabuImprovement.getConjuntoMayorPromedio());
-        //System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: "+noTabuImprovement.getMayorPromedioPeores()+" CON EL CONJUNTO SEMILLAS: "+noTabuImprovement.getConjuntoMayorPromedioPeores());
-        System.out.println("TIEMPO IMPROVEMENT SIN TABU: "+tiempoNoTabu/1000);
     }
-
-
 }
