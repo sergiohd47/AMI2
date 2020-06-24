@@ -1,12 +1,11 @@
 package Improvement;
 
+import Comparadores.ComparadorMayorMenor;
 import EstructuraDatos.Grafo;
 import Solution.Solution;
+import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * @author Sergio Hernandez Dominguez
@@ -23,6 +22,7 @@ public class TabuImprovement implements Improvement {
     private ArrayList<Integer> colaTabu;
     private int mayorPromedioPeores;
     private int criterioParada;
+    private ArrayList<Pair<HashSet<Integer>,Integer>> listaMejoresSoluciones;
 
     public TabuImprovement(int longitudTabu, int promedioActual, int criterioParada){
         this.longitudTabu=longitudTabu;
@@ -35,6 +35,8 @@ public class TabuImprovement implements Improvement {
         this.conjuntoMayorPromedioPeores=new HashSet<>();
         this.colaTabu=new ArrayList<>();
         this.criterioParada=criterioParada;
+
+        this.listaMejoresSoluciones=new ArrayList<>();
     }
     @Override
     public void improve(Solution solution) {
@@ -76,6 +78,8 @@ public class TabuImprovement implements Improvement {
                         promedioInfeccion = promedioInfeccion + conjuntoNuevosInfectados.size();
                     }
                     promedioInfeccion = promedioInfeccion / NUMERO_SIMULACIONES_SOLUTION;
+                    this.listaMejoresSoluciones.add(new Pair<>(conjuntoNuevasSemillas,promedioInfeccion));
+                    Collections.sort(this.listaMejoresSoluciones,new ComparadorMayorMenor());
                     if (promedioInfeccion > this.mayorPromedio) {
                         this.mayorPromedio = promedioInfeccion;
                         if(this.mayorPromedio>this.promedioActual){
@@ -114,5 +118,15 @@ public class TabuImprovement implements Improvement {
     public HashSet<Integer> getConjuntoMayorPromedio(){return this.conjuntoMayorPromedio;}
     public HashSet<Integer> getConjuntoMayorPromedioPeores(){return this.conjuntoMayorPromedioPeores;}
     public int getMayorPromedioPeores(){return this.mayorPromedioPeores; }
+    public ArrayList<HashSet<Integer>> getMejoresSoluciones(int numeroK){ //CON K SE REPRESENTA LAS K MEJORES SOLUCIONES TRAS CONSTRUIR Y MEJORAR
+        ArrayList<HashSet<Integer>> conjuntoSolucion=new ArrayList<>();
+        for(Pair<HashSet<Integer>, Integer> parSoluciones: this.listaMejoresSoluciones){
+            conjuntoSolucion.add(parSoluciones.getKey());
+            if(conjuntoSolucion.size()==numeroK){
+                break;
+            }
+        }
+        return conjuntoSolucion;
+    }
 
 }
