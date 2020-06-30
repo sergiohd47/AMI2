@@ -95,13 +95,31 @@ public class Principal {
                 ArrayList<HashSet<Integer>> kMejoresSoluciones=tabuImprovement.getMejoresSoluciones(10);
                 long finalTiempoTabu = System.currentTimeMillis();
                 double tiempoTabu = finalTiempoTabu - inicioTiempoTabu;
+                System.out.println("PROMEDIO INFECCION MAXIMA: " + promedioActual);
+                System.out.println("-----------------------------------");
+                System.out.println("--------IMPROVEMENT CON TABU--------");
+                System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: " + tabuImprovement.getMayorPromedio() + " CON EL CONJUNTO SEMILLAS: " + tabuImprovement.getConjuntoMayorPromedio());
+                System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: " + tabuImprovement.getMayorPromedioPeores() + " CON EL CONJUNTO SEMILLAS: " + tabuImprovement.getConjuntoMayorPromedioPeores());
+                System.out.println("TIEMPO IMPROVEMENT CON TABU: " + tiempoTabu / 1000);
+                System.out.println("-----------------------------------");
+                System.out.println("LISTA MEJORES SOLUCIONES: "+kMejoresSoluciones);
                 PathRelinking pathRelinking=new PathRelinking(solution);
-                Pair<HashSet<Integer>,Integer> parMejorPathRelinking=pathRelinking.combinarSacarMejor(kMejoresSoluciones);
-                int promedioMejorPathRelinking=parMejorPathRelinking.getValue();
-                HashSet<Integer> conjuntoNuevaSemillaPR=parMejorPathRelinking.getKey();
-                Solution solutionPathRelinking=new Solution(grafoND,conjuntoNuevaSemillaPR);
-                TabuImprovement tabuImprovementTrasPathRelinking=new TabuImprovement(PORCENTAJE_LISTA_TABU_50,promedioMejorPathRelinking,CRITERIO_PARADA_35);
-                tabuImprovementTrasPathRelinking.improve(solutionPathRelinking);
+                ArrayList<Pair<HashSet<Integer>,Integer>> listaMejoresPathRelinking=pathRelinking.combinarSacarMejor(kMejoresSoluciones);
+                int numero=0;
+                for (Pair<HashSet<Integer>,Integer> parMejorPathRelinking: listaMejoresPathRelinking) {
+                    int promedioMejorPathRelinking = parMejorPathRelinking.getValue();
+                    HashSet<Integer> conjuntoNuevaSemillaPR = parMejorPathRelinking.getKey();
+                    Solution solutionPathRelinking = new Solution(grafoND, conjuntoNuevaSemillaPR);
+                    TabuImprovement tabuImprovementTrasPathRelinking = new TabuImprovement(PORCENTAJE_LISTA_TABU_50, promedioMejorPathRelinking, CRITERIO_PARADA_35);
+                    tabuImprovementTrasPathRelinking.improve(solutionPathRelinking);
+                    System.out.println("PROMEDIO INFECCION MAXIMA: " + promedioMejorPathRelinking);
+                    System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: " + tabuImprovementTrasPathRelinking.getMayorPromedio() + " CON EL CONJUNTO SEMILLAS: " + tabuImprovementTrasPathRelinking.getConjuntoMayorPromedio());
+                    if(promedioMejorPathRelinking<tabuImprovementTrasPathRelinking.getMayorPromedio()){
+                        System.out.println("MEJORA CON LA SEMILLA PATH RELINKING: " + tabuImprovementTrasPathRelinking.getConjuntoMayorPromedio());
+                        numero++;
+                    }
+                }
+                System.out.println("NUMERO DE VECES QUE SE MEJORA LA SEMILLA DEL PATH RELINKING: "+numero+"/"+listaMejoresPathRelinking.size());
 
                 //System.out.println("-------------------------- PORCENTAJE TABU: "+porcentajeListaTabu+" ------------------------------------------------------");
                 //System.out.println("------------------------------- CRITERIO PARADA: "+criterioParada+" -------------------------------");
@@ -111,12 +129,7 @@ public class Principal {
                 //long finalTiempoNoTabu = System.currentTimeMillis();
                 //double tiempoNoTabu = finalTiempoNoTabu - inicioTiempoNoTabu;
 
-                System.out.println("PROMEDIO INFECCION MAXIMA: " + promedioActual);
-                System.out.println("-----------------------------------");
-                System.out.println("--------IMPROVEMENT CON TABU--------");
-                System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: " + tabuImprovement.getMayorPromedio() + " CON EL CONJUNTO SEMILLAS: " + tabuImprovement.getConjuntoMayorPromedio());
-                System.out.println("PROMEDIO INFECCION MEJOR TRAS BUSQUEDA: " + tabuImprovement.getMayorPromedioPeores() + " CON EL CONJUNTO SEMILLAS: " + tabuImprovement.getConjuntoMayorPromedioPeores());
-                System.out.println("TIEMPO IMPROVEMENT CON TABU: " + tiempoTabu / 1000);
+
                 //System.out.println("-----------------------------------");
                 //System.out.println("--------IMPROVEMENT SIN TABU--------");
                 //System.out.println("PROMEDIO INFECCION MAXIMA TRAS BUSQUEDA: "+noTabuImprovement.getMayorPromedio()+" CON EL CONJUNTO SEMILLAS: "+noTabuImprovement.getConjuntoMayorPromedio());
