@@ -44,7 +44,7 @@ public class TabuImprovement implements Improvement {
         HashSet<Integer> conjuntoNodosSemillas=solution.getConjuntoNodoSemilla();
         this.conjuntoMayorPromedio=conjuntoNodosSemillas;
         this.longitudTabu=(int)Math.ceil((float)(this.longitudTabu*conjuntoNodosSemillas.size())/100); //REDONDEA HACIA ARRIBA (0.3->1)
-        System.out.println("longitud cola: "+this.longitudTabu);
+        //System.out.println("longitud cola: "+this.longitudTabu);
         boolean terminado=false;
         boolean salirMayorPromedioActual=false;
         int numero=0;
@@ -53,13 +53,13 @@ public class TabuImprovement implements Improvement {
             numeroIteraccionesNoMejora=0;
             HashSet<Integer> conjuntoNodosEntrada= new HashSet<>(grafoND.nodos());
             conjuntoNodosEntrada.removeAll(this.conjuntoMayorPromedio);
-            System.out.println("semilla: "+this.conjuntoMayorPromedio);
+            //System.out.println("semilla: "+this.conjuntoMayorPromedio);
             for (Integer nodoSemilla : this.conjuntoMayorPromedio) {
-                System.out.println("--------------- IMPROVEMENT GRANDE ---------------");
+                //System.out.println("--------------- IMPROVEMENT GRANDE ---------------");
                 for (Integer nodoEntrada : conjuntoNodosEntrada) {
-                    System.out.println("------ IMPROVEMENT " + numero + " ------");
+                    //System.out.println("------ IMPROVEMENT " + numero + " ------");
                     if (colaTabu.contains(nodoEntrada)) {
-                        System.out.println("SALTA POR COLA TABU");
+                        //System.out.println("SALTA POR COLA TABU");
                         continue;
                     }
                     if (this.colaTabu.size() + 1 > this.longitudTabu) {
@@ -83,10 +83,10 @@ public class TabuImprovement implements Improvement {
                     if (promedioInfeccion > this.mayorPromedio) {
                         this.mayorPromedio = promedioInfeccion;
                         if(this.mayorPromedio>this.promedioActual){
-                            System.out.println("promedio ("+this.mayorPromedio+") > promedioActual ("+this.promedioActual+")");
+                            //System.out.println("promedio ("+this.mayorPromedio+") > promedioActual ("+this.promedioActual+")");
                             this.promedioActual=this.mayorPromedio;
                             this.conjuntoMayorPromedio = conjuntoNuevasSemillas;
-                            System.out.println("nueva semilla: "+this.conjuntoMayorPromedio);
+                            //System.out.println("nueva semilla: "+this.conjuntoMayorPromedio);
                             salirMayorPromedioActual=true;
                             break;
                         }
@@ -96,7 +96,7 @@ public class TabuImprovement implements Improvement {
                             this.conjuntoMayorPromedioPeores = conjuntoNuevasSemillas;
                         }else{
                             numeroIteraccionesNoMejora++;
-                            System.out.println("iteracciones no mejora: "+numeroIteraccionesNoMejora);
+                            //System.out.println("iteracciones no mejora: "+numeroIteraccionesNoMejora);
                             if(numeroIteraccionesNoMejora==this.criterioParada){
                                 terminado=true;
                                 break;
